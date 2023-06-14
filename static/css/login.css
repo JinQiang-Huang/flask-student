@@ -1,0 +1,11 @@
+body {
+    background-image: url('/static/images/login.jpg');
+}
+
+#login-id {
+    background-image: url('/static/images/login.jpg');
+}
+
+.login-class {
+    background-image: url('/static/images/login.jpg');
+}

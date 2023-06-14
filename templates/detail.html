@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Detail
+{% endblock %}
+
+{% block content %}
+<h1 align="center" class="text-danger">{{ message.name }}</h1>
+
+<table class="table table-success table-striped">
+    <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>email</th>
+        <th>password</th>
+    </tr>
+    <tr>
+        <td>{{message.id}}</td>
+        <td>{{message.name}}</td>
+        <td>{{message.email}}</td>
+        <td>{{message.password}}</td>
+    </tr>
+
+{% endblock %}
