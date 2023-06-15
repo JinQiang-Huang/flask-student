@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, url_for, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import timedelta
+import functools
 
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
@@ -21,13 +22,17 @@ class User(db.Model):
     def __repr__(self):
         return f'add success <{self.name}>'
 
-# session
+# decorator session
 
 
-def session_fun():
-    username = session.get('username')
-    if not username:
-        return redirect(url_for('login'))
+def auth(func):
+    @functools.wraps(func)
+    def inner(*args, **kwargs):
+        username = session.get('username')
+        if not username:
+            return redirect(url_for('login'))
+        return func(*args, **kwargs)
+    return inner
 
 # home
 
@@ -72,21 +77,15 @@ def login():
 
 
 @app.route('/index')
+@auth
 def index():
-    username = session.get('username')
-    if not username:
-        return redirect(url_for('login'))
-
     students = User.query.all()
     return render_template('index.html', students=students)
 
 
 @app.route('/create', methods=['GET', 'POST'])
+@auth
 def create():
-    username = session.get('username')
-    if not username:
-        return redirect(url_for('login'))
-
     if request.method == "POST":
         name = request.form.get('name')
         email = request.form.get('email')
@@ -111,21 +110,15 @@ def create():
 
 
 @app.route('/detail/<int:id>')
+@auth
 def detail(id):
-    username = session.get('username')
-    if not username:
-        return redirect(url_for('login'))
-
     message = User.query.get_or_404(id)
     return render_template('detail.html', message=message)
 
 
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
+@auth
 def edit(id):
-    username = session.get('username')
-    if not username:
-        return redirect(url_for('login'))
-
     user = User.query.get_or_404(id)
     if request.method == "POST":
         user.name = request.form.get('name')
@@ -137,11 +130,8 @@ def edit(id):
 
 
 @app.route('/delete/<int:id>')
+@auth
 def delete(id):
-    username = session.get('username')
-    if not username:
-        return redirect(url_for('login'))
-
     user = User.query.get_or_404(id)
     db.session.delete(user)
     db.session.commit()
