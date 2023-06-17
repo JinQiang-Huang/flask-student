@@ -11,6 +11,9 @@
 # Configuration  Virtual Environment
     apt install python3-venv
     python3 -m venv .\venv
+    
+    # Active virtual environment
+    source .venv/bin/active
 
 # Project description
     Download the project to the virtual environment directory
